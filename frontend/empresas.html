@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Tracker - Empresas (AC2)</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1, h2 { color: #1e293b; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #3b82f6; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #2563eb; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #1e293b; color: white; }
+        .btn-delete { background-color: #ef4444; padding: 5px 10px; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-delete:hover { background-color: #dc2626; }
+        .section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .nav-link { display: inline-block; margin-bottom: 20px; color: #10b981; text-decoration: none; font-weight: bold; font-size: 16px; }
+        .nav-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Link corrigido com ./ para voltar para AC1 -->
+       <a href="index.html" class="nav-link">⬅ Voltar para Vagas (AC1)</a>
+        
+        <h1>🏢 Gerenciar Empresas (AC2)</h1>
+        <p>Cadastre as empresas que você tem interesse em monitorar.</p>
+
+        <!-- Seção de Cadastro de Empresa (Título removido) -->
+        <div class="section">
+            <form id="companyForm">
+                <div class="form-group">
+                    <label>Nome da Empresa:</label>
+                    <input type="text" id="name" required placeholder="Ex: Tech Corp">
+                </div>
+                <div class="form-group">
+                    <label>Setor:</label>
+                    <input type="text" id="sector" required placeholder="Ex: Tecnologia, Finanças">
+                </div>
+                <div class="form-group">
+                    <label>Site / Portal de Vagas:</label>
+                    <input type="text" id="website" placeholder="https://...">
+                </div>
+                <button type="submit">Salvar Empresa</button>
+            </form>
+        </div>
+
+        <!-- Seção de Listagem de Empresas -->
+        <div class="section">
+            <h2>Empresas Cadastradas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Empresa</th>
+                        <th>Setor</th>
+                        <th>Site</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="companyTableBody">
+                    <!-- Os dados entram aqui via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api/companies';
+
+        // Função para carregar as empresas do Back-end
+        async function loadCompanies() {
+            try {
+                const response = await fetch(API_URL);
+                const companies = await response.json();
+                const tbody = document.getElementById('companyTableBody');
+                tbody.innerHTML = '';
+
+                companies.forEach(company => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${company.name}</td>
+                        <td>${company.sector}</td>
+                        <td>${company.website}</td>
+                        <td><button class="btn-delete" onclick="deleteCompany(${company.id})">Excluir</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar empresas:', error);
+            }
+        }
+
+        // Função para cadastrar nova empresa
+        document.getElementById('companyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const sector = document.getElementById('sector').value;
+            const website = document.getElementById('website').value;
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, sector, website })
+                });
+                document.getElementById('companyForm').reset();
+                loadCompanies();
+            } catch (error) {
+                console.error('Erro ao salvar empresa:', error);
+            }
+        });
+
+        // Função para deletar empresa
+        async function deleteCompany(id) {
+            try {
+                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                loadCompanies();
+            } catch (error) {
+                console.error('Erro ao deletar empresa:', error);
+            }
+        }
+
+        // Carregar as empresas ao abrir a página
+        loadCompanies();
+    </script>
+</body>
+</html>
