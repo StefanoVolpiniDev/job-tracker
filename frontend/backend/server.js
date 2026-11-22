@@ -36,6 +36,19 @@ db.connect((err) => {
             if (err) console.error('Erro ao criar tabela jobs:', err.message);
         });
 
+        // Criando a tabela de empresas automaticamente (AC3)
+        const createCompaniesTable = `
+            CREATE TABLE IF NOT EXISTS companies (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255),
+                sector VARCHAR(255),
+                website VARCHAR(255)
+            )
+        `;
+        db.query(createCompaniesTable, (err) => {
+            if (err) console.error('Erro ao criar tabela companies:', err.message);
+        });
+
         // Criando a tabela de usuários automaticamente
         const createUsersTable = `
             CREATE TABLE IF NOT EXISTS users (
@@ -50,7 +63,7 @@ db.connect((err) => {
     }
 });
 
-// --- ROTAS DO JOB TRACKER (CRUD) ---
+// --- ROTAS DO JOB TRACKER (VAGAS) ---
 
 // Listar vagas
 app.get('/api/jobs', (req, res) => {
@@ -70,12 +83,51 @@ app.post('/api/jobs', (req, res) => {
     });
 });
 
+// Atualizar status da vaga (4ª FUNCIONALIDADE - PROVA OFICIAL)
+app.put('/api/jobs/:id', (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    db.query('UPDATE jobs SET status = ? WHERE id = ?', [status, id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Status da vaga atualizado com sucesso!' });
+    });
+});
+
 // Excluir vaga
 app.delete('/api/jobs/:id', (req, res) => {
     const { id } = req.params;
     db.query('DELETE FROM jobs WHERE id = ?', [id], (err) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ message: 'Vaga excluída com sucesso!' });
+    });
+});
+
+// --- ROTAS DE EMPRESAS (AC3) ---
+
+// Listar empresas
+app.get('/api/companies', (req, res) => {
+    db.query('SELECT * FROM companies', (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// Criar empresa
+app.post('/api/companies', (req, res) => {
+    const { name, sector, website } = req.body;
+    db.query('INSERT INTO companies (name, sector, website) VALUES (?, ?, ?)', 
+    [name, sector, website], (err, result) => {
+        if (err) return res.status(400).json({ error: err.message });
+        res.json({ id: result.insertId, message: 'Empresa cadastrada com sucesso!' });
+    });
+});
+
+// Excluir empresa
+app.delete('/api/companies/:id', (req, res) => {
+    const { id } = req.params;
+    db.query('DELETE FROM companies WHERE id = ?', [id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Empresa excluída com sucesso!' });
     });
 });
 
