@@ -22,7 +22,7 @@ db.connect((err) => {
     } else {
         console.log('Conectado ao banco de dados MySQL com sucesso!');
         
-        // Criando a tabela de vagas automaticamente (AC1)
+        // Criando a tabela de vagas automaticamente
         const createJobsTable = `
             CREATE TABLE IF NOT EXISTS jobs (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,19 +36,7 @@ db.connect((err) => {
             if (err) console.error('Erro ao criar tabela jobs:', err.message);
         });
 
-        // Criando a tabela de usuários automaticamente
-        const createUsersTable = `
-            CREATE TABLE IF NOT EXISTS users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                email VARCHAR(255) UNIQUE,
-                password VARCHAR(255)
-            )
-        `;
-        db.query(createUsersTable, (err) => {
-            if (err) console.error('Erro ao criar tabela users:', err.message);
-        });
-
-        // ---> NOVA TABELA: EMPRESAS (AC2) <---
+        // Criando a tabela de empresas automaticamente (AC3)
         const createCompaniesTable = `
             CREATE TABLE IF NOT EXISTS companies (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -60,10 +48,22 @@ db.connect((err) => {
         db.query(createCompaniesTable, (err) => {
             if (err) console.error('Erro ao criar tabela companies:', err.message);
         });
+
+        // Criando a tabela de usuários automaticamente
+        const createUsersTable = `
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                email VARCHAR(255) UNIQUE,
+                password VARCHAR(255)
+            )
+        `;
+        db.query(createUsersTable, (err) => {
+            if (err) console.error('Erro ao criar tabela users:', err.message);
+        });
     }
 });
 
-// --- ROTAS DO JOB TRACKER (CRUD VAGAS - AC1) ---
+// --- ROTAS DO JOB TRACKER (VAGAS) ---
 
 // Listar vagas
 app.get('/api/jobs', (req, res) => {
@@ -83,6 +83,16 @@ app.post('/api/jobs', (req, res) => {
     });
 });
 
+// Atualizar status da vaga (4ª FUNCIONALIDADE - PROVA OFICIAL)
+app.put('/api/jobs/:id', (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    db.query('UPDATE jobs SET status = ? WHERE id = ?', [status, id], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: 'Status da vaga atualizado com sucesso!' });
+    });
+});
+
 // Excluir vaga
 app.delete('/api/jobs/:id', (req, res) => {
     const { id } = req.params;
@@ -92,7 +102,7 @@ app.delete('/api/jobs/:id', (req, res) => {
     });
 });
 
-// --- NOVAS ROTAS (CRUD EMPRESAS - AC2) ---
+// --- ROTAS DE EMPRESAS (AC3) ---
 
 // Listar empresas
 app.get('/api/companies', (req, res) => {
