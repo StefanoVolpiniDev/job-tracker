@@ -3,142 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Tracker - Organizador de Carreiras</title>
+    <title>Job Tracker - Painel Unificado</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1, h2 { color: #1e293b; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #1e293b; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 30px;}
+        h2 { color: #1e293b; margin-top: 0;}
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        button { background-color: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        button:hover { background-color: #059669; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .status-select { padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #fff; font-weight: bold; color: #1e293b; cursor: pointer; }
+        button { color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-green { background-color: #10b981; }
+        .btn-green:hover { background-color: #059669; }
+        .btn-blue { background-color: #3b82f6; }
+        .btn-blue:hover { background-color: #2563eb; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background-color: #1e293b; color: white; }
-        .btn-delete { background-color: #ef4444; padding: 5px 10px; }
+        .btn-delete { background-color: #ef4444; padding: 5px 10px; color: white; border: none; border-radius: 4px; cursor: pointer; }
         .btn-delete:hover { background-color: #dc2626; }
-        .section { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-        .nav-link { display: inline-block; margin-bottom: 20px; color: #007bff; text-decoration: none; font-weight: bold; font-size: 16px; }
-        .nav-link:hover { text-decoration: underline; }
+        .section { margin-bottom: 40px; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .feedback { font-size: 14px; color: #10b981; font-weight: bold; margin-left: 12px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🚀 Job Tracker Acadêmico</h1>
-        <p>Gerencie suas candidaturas de emprego de forma simples e integrada.</p>
+        <h1>🚀 Job Tracker Acadêmico - Painel Central</h1>
         
-        <!-- Link de navegação para a AC2 -->
-        
-<a href="empresas.html" class="nav-link">➡ Ir para Gestão de Empresas (AC2)</a>
-        <!-- Seção de Cadastro de Vaga -->
+        <!-- ================= SEÇÃO 1: GESTÃO DE VAGAS (AC1 + PROVA OFICIAL) ================= -->
         <div class="section">
             <h2>Adicionar Nova Vaga</h2>
             <form id="jobForm">
-                <div class="form-group">
-                    <label>Cargo / Título:</label>
-                    <input type="text" id="title" required placeholder="Ex: Desenvolvedor Júnior">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Cargo / Título:</label>
+                        <input type="text" id="title" required placeholder="Ex: Desenvolvedor Júnior">
+                    </div>
+                    <div class="form-group">
+                        <label>Empresa:</label>
+                        <input type="text" id="company" required placeholder="Ex: Tech Corp">
+                    </div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select id="status">
+                            <option value="Candidatura Enviada">Candidatura Enviada</option>
+                            <option value="Em Entrevista">Em Entrevista</option>
+                            <option value="Proposta Recebida">Proposta Recebida</option>
+                            <option value="Rejeitado">Rejeitado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Link da Vaga:</label>
+                        <input type="text" id="link" placeholder="https://...">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Empresa:</label>
-                    <input type="text" id="company" required placeholder="Ex: Tech Corp">
-                </div>
-                <div class="form-group">
-                    <label>Status:</label>
-                    <select id="status">
-                        <option value="Candidatura Enviada">Candidatura Enviada</option>
-                        <option value="Em Entrevista">Em Entrevista</option>
-                        <option value="Proposta Recebida">Proposta Recebida</option>
-                        <option value="Rejeitado">Rejeitado</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Link da Vaga:</label>
-                    <input type="text" id="link" placeholder="https://...">
-                </div>
-                <button type="submit">Salvar Vaga</button>
+                <button type="submit" class="btn-green">Salvar Vaga</button>
             </form>
-        </div>
 
-        <!-- Seção de Listagem de Vagas -->
-        <div class="section">
-            <h2>Minhas Candidaturas</h2>
+            <h2 style="margin-top: 30px;">Minhas Candidaturas <span id="statusFeedback" class="feedback"></span></h2>
             <table>
                 <thead>
                     <tr>
                         <th>Cargo</th>
                         <th>Empresa</th>
-                        <th>Status</th>
+                        <th>Status (Editar)</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
-                <tbody id="jobTableBody">
-                    <!-- Os dados entram aqui via JavaScript -->
-                </tbody>
+                <tbody id="jobTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- ================= SEÇÃO 2: GESTÃO DE EMPRESAS (AC2 e AC3) ================= -->
+        <div class="section">
+            <h2>Adicionar Empresa Alvo</h2>
+            <form id="companyForm">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Nome da Empresa:</label>
+                        <input type="text" id="name" required placeholder="Ex: Microsoft">
+                    </div>
+                    <div class="form-group">
+                        <label>Setor:</label>
+                        <input type="text" id="sector" required placeholder="Ex: Tecnologia">
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Site / Portal de Vagas:</label>
+                        <input type="text" id="website" placeholder="https://...">
+                    </div>
+                </div>
+                <button type="submit" class="btn-blue">Salvar Empresa</button>
+            </form>
+
+            <h2 style="margin-top: 30px;">Empresas Cadastradas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Empresa</th>
+                        <th>Setor</th>
+                        <th>Site</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="companyTableBody"></tbody>
             </table>
         </div>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:3000/api/jobs';
+        const API_JOBS = 'http://localhost:3000/api/jobs';
+        const API_COMPANIES = 'http://localhost:3000/api/companies';
 
-        // Função para carregar as vagas do Back-end
+        // ----------- LÓGICA DE VAGAS -----------
         async function loadJobs() {
             try {
-                const response = await fetch(API_URL);
-                const jobs = await response.json();
+                const res = await fetch(API_JOBS);
+                const jobs = await res.json();
                 const tbody = document.getElementById('jobTableBody');
                 tbody.innerHTML = '';
-
                 jobs.forEach(job => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${job.title}</td>
                         <td>${job.company}</td>
-                        <td>${job.status}</td>
+                        <td>
+                            <select class="status-select" onchange="updateJobStatus(${job.id}, this.value)">
+                                <option value="Candidatura Enviada" ${job.status === 'Candidatura Enviada' ? 'selected' : ''}>Candidatura Enviada</option>
+                                <option value="Em Entrevista" ${job.status === 'Em Entrevista' ? 'selected' : ''}>Em Entrevista</option>
+                                <option value="Proposta Recebida" ${job.status === 'Proposta Recebida' ? 'selected' : ''}>Proposta Recebida</option>
+                                <option value="Rejeitado" ${job.status === 'Rejeitado' ? 'selected' : ''}>Rejeitado</option>
+                            </select>
+                        </td>
                         <td><button class="btn-delete" onclick="deleteJob(${job.id})">Excluir</button></td>
                     `;
                     tbody.appendChild(tr);
                 });
-            } catch (error) {
-                console.error('Erro ao carregar vagas:', error);
-            }
+            } catch (error) { console.error('Erro:', error); }
         }
 
-        // Função para cadastrar nova vaga
         document.getElementById('jobForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const title = document.getElementById('title').value;
             const company = document.getElementById('company').value;
             const status = document.getElementById('status').value;
             const link = document.getElementById('link').value;
-
             try {
-                await fetch(API_URL, {
+                await fetch(API_JOBS, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title, company, status, link })
                 });
                 document.getElementById('jobForm').reset();
                 loadJobs();
-            } catch (error) {
-                console.error('Erro ao salvar vaga:', error);
-            }
+            } catch (error) { console.error('Erro:', error); }
         });
 
-        // Função para deletar vaga
-        async function deleteJob(id) {
+        // 4ª FUNCIONALIDADE: Atualizar status da vaga no banco (PUT)
+        async function updateJobStatus(id, newStatus) {
             try {
-                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                await fetch(`${API_JOBS}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                const feedback = document.getElementById('statusFeedback');
+                feedback.textContent = `✓ Status atualizado para "${newStatus}"!`;
+                setTimeout(() => { feedback.textContent = ''; }, 3000);
                 loadJobs();
-            } catch (error) {
-                console.error('Erro ao deletar vaga:', error);
-            }
+            } catch (error) { console.error('Erro ao atualizar status:', error); }
         }
 
-        // Carregar as vagas ao abrir a página
+        async function deleteJob(id) {
+            await fetch(`${API_JOBS}/${id}`, { method: 'DELETE' });
+            loadJobs();
+        }
+
+        // ----------- LÓGICA DE EMPRESAS -----------
+        async function loadCompanies() {
+            try {
+                const res = await fetch(API_COMPANIES);
+                const companies = await res.json();
+                const tbody = document.getElementById('companyTableBody');
+                tbody.innerHTML = '';
+                companies.forEach(comp => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${comp.name}</td>
+                        <td>${comp.sector}</td>
+                        <td>${comp.website}</td>
+                        <td><button class="btn-delete" onclick="deleteCompany(${comp.id})">Excluir</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) { console.error('Erro:', error); }
+        }
+
+        document.getElementById('companyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const sector = document.getElementById('sector').value;
+            const website = document.getElementById('website').value;
+            try {
+                await fetch(API_COMPANIES, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, sector, website })
+                });
+                document.getElementById('companyForm').reset();
+                loadCompanies();
+            } catch (error) { console.error('Erro:', error); }
+        });
+
+        async function deleteCompany(id) {
+            await fetch(`${API_COMPANIES}/${id}`, { method: 'DELETE' });
+            loadCompanies();
+        }
+
+        // Inicia as duas funções ao carregar a página
         loadJobs();
+        loadCompanies();
     </script>
 </body>
 </html>
